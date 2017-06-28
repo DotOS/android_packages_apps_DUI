@@ -43,6 +43,7 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.FrameLayout;
@@ -96,6 +97,13 @@ public class SmartBarView extends BaseNavigationBar {
         sUris.add(Settings.Secure.getUriFor(Settings.Secure.NAVBAR_BUTTONS_ALPHA));
         sUris.add(Settings.Secure.getUriFor(Settings.Secure.ONE_HANDED_MODE_UI));
         sUris.add(Settings.Secure.getUriFor(Settings.Secure.PULSE_CUSTOM_BUTTONS_OPACITY));
+        sUris.add(Settings.System.getUriFor(Settings.System.DOT_TOP_COLOR));
+        sUris.add(Settings.System.getUriFor(Settings.System.DOT_LEFT_COLOR));
+        sUris.add(Settings.System.getUriFor(Settings.System.DOT_RIGHT_COLOR));
+        sUris.add(Settings.System.getUriFor(Settings.System.DOT_BOTTOM_COLOR));
+        sUris.add(Settings.System.getUriFor(Settings.System.DOT_COLOR_SWITCH));
+        sUris.add(Settings.System.getUriFor(Settings.System.NAV_BUTTON_SOUNDS));
+        sUris.add(Settings.Secure.getUriFor(Settings.Secure.SMARTBAR_LONGPRESS_DELAY));
     }
 
     private SmartObservable mObservable = new SmartObservable() {
@@ -119,6 +127,18 @@ public class SmartBarView extends BaseNavigationBar {
                 updateOneHandedModeSetting();
             } else if (uri.equals(Settings.Secure.getUriFor(Settings.Secure.PULSE_CUSTOM_BUTTONS_OPACITY))) {
                 updatePulseNavButtonsOpacity();
+            } else if (uri.equals(Settings.System.getUriFor(Settings.System.DOT_TOP_COLOR))) {
+                updateOpaTopColor();
+            } else if (uri.equals(Settings.System.getUriFor(Settings.System.DOT_LEFT_COLOR))) {
+                updateOpaLeftColor();
+            } else if (uri.equals(Settings.System.getUriFor(Settings.System.DOT_RIGHT_COLOR))) {
+                updateOpaRightColor();
+            } else if (uri.equals(Settings.System.getUriFor(Settings.System.DOT_BOTTOM_COLOR))) {
+                updateOpaBottomColor();
+            } else if (uri.equals(Settings.System.getUriFor(Settings.System.DOT_COLOR_SWITCH))) {
+                updateOpaColorSwitch();
+            } else if (uri.equals(Settings.Secure.getUriFor(Settings.Secure.SMARTBAR_LONGPRESS_DELAY))) {
+                updateButtonLongpressDelay();
             }
         }
     };
@@ -230,6 +250,7 @@ public class SmartBarView extends BaseNavigationBar {
         updateImeHintModeSettings();
         updateContextLayoutSettings();
         updateOneHandedModeSetting();
+        updateButtonLongpressDelay();
     }
 
     @Override
@@ -843,5 +864,148 @@ public class SmartBarView extends BaseNavigationBar {
                 .alpha(fadeAlpha)
                 .setDuration(PULSE_FADE_IN_DURATION)
                 .start();
+    }
+
+    public void  setYAnimationDuration() {
+      int dur = Settings.System.getIntForUser(
+                ctx.getContentResolver(), Settings.System.OPA_ANIM_DURATION_Y, LINE_ANIMATION_DURATION_Y,
+                UserHandle.USER_CURRENT);
+      OpaLayout.LINE_ANIMATION_DURATION_Y = dur;
+    }
+
+    public void  setXAnimationDuration() {
+      int dur = Settings.System.getIntForUser(
+                ctx.getContentResolver(), Settings.System.OPA_ANIM_DURATION_X, LINE_ANIMATION_DURATION_X,
+                UserHandle.USER_CURRENT);
+      OpaLayout.LINE_ANIMATION_DURATION_X = dur;
+    }
+
+    public void  setBGAnimationDuration() {
+      int dur = Settings.System.getIntForUser(
+                ctx.getContentResolver(), Settings.System.COLLAPSE_ANIMATION_DURATION_BG, COLLAPSE_ANIMATION_DURATION_BG,
+                UserHandle.USER_CURRENT);
+      OpaLayout.COLLAPSE_ANIMATION_DURATION_BG = dur;
+    }
+
+    public void  setRYAnimationDuration() {
+      int dur = Settings.System.getIntForUser(
+                ctx.getContentResolver(), Settings.System.COLLAPSE_ANIMATION_DURATION_RY, COLLAPSE_ANIMATION_DURATION_RY,
+                UserHandle.USER_CURRENT);
+      OpaLayout.COLLAPSE_ANIMATION_DURATION_RY = dur;
+    }
+
+    public void setRetractAnimationDuration() {
+      int dur = Settings.System.getIntForUser(
+                ctx.getContentResolver(), Settings.System.RETRACT_ANIMATION_DURATION, RETRACT_ANIMATION_DURATION,
+                UserHandle.USER_CURRENT);
+      OpaLayout.RETRACT_ANIMATION_DURATION = dur;
+
+    }
+
+    public void setDiamondAnimationDuration() {
+      int dur = Settings.System.getIntForUser(
+                ctx.getContentResolver(), Settings.System.DIAMOND_ANIMATION_DURATION, DIAMOND_ANIMATION_DURATION,
+                UserHandle.USER_CURRENT);
+      OpaLayout.DIAMOND_ANIMATION_DURATION = dur;
+    }
+
+    public void  setDotsAnimationDuration() {
+      int dur = Settings.System.getIntForUser(
+                ctx.getContentResolver(), Settings.System.DOTS_RESIZE_DURATION, DOTS_RESIZE_DURATION,
+                UserHandle.USER_CURRENT);
+      OpaLayout.DOTS_RESIZE_DURATION = dur;
+    }
+
+    public void  setHomeResizeAnimationDuration() {
+      int dur = Settings.System.getIntForUser(
+                ctx.getContentResolver(), Settings.System.HOME_RESIZE_DURATION, HOME_RESIZE_DURATION,
+                UserHandle.USER_CURRENT);
+      OpaLayout.HOME_RESIZE_DURATION = dur;
+    }
+
+    public void updateOpaTopColor() {
+      int col = Settings.System.getIntForUser(
+                ctx.getContentResolver(), Settings.System.DOT_TOP_COLOR, Color.RED,
+                UserHandle.USER_CURRENT);
+      OpaLayout.VIEW_TOP = col;
+
+    }
+
+    public void updateOpaLeftColor() {
+      int col = Settings.System.getIntForUser(
+                ctx.getContentResolver(), Settings.System.DOT_LEFT_COLOR, Color.BLUE,
+                UserHandle.USER_CURRENT);
+      OpaLayout.VIEW_LEFT = col;
+    }
+
+    public void updateOpaRightColor() {
+      int col = Settings.System.getIntForUser(
+                ctx.getContentResolver(), Settings.System.DOT_RIGHT_COLOR, Color.GREEN,
+                UserHandle.USER_CURRENT);
+      OpaLayout.VIEW_RIGHT = col;
+    }
+
+    public void updateOpaBottomColor() {
+      int col = Settings.System.getIntForUser(
+                ctx.getContentResolver(), Settings.System.DOT_BOTTOM_COLOR, Color.YELLOW,
+                UserHandle.USER_CURRENT);
+      OpaLayout.VIEW_BOTTOM = col;
+    }
+
+    public void updateOpaColorSwitch() {
+       int mColor = Settings.System.getIntForUser(ctx.getContentResolver(),
+                    Settings.System.DOT_COLOR_SWITCH, 0, UserHandle.USER_CURRENT);
+       OpaLayout.mColorDots = mColor;
+       int r1 = randomColor();
+       int r2 = randomColor();
+       int r3 = randomColor();
+       int r4 = randomColor();
+       OpaLayout.mRandomColor1 = r1;
+       OpaLayout.mRandomColor2 = r2;
+       OpaLayout.mRandomColor3 = r3;
+       OpaLayout.mRandomColor4 = r4;
+    }
+
+    public int randomColor() {
+           int red = (int) (0xff * Math.random());
+           int green = (int) (0xff * Math.random());
+           int blue = (int) (0xff * Math.random());
+           return Color.argb(255, red, green, blue);
+    }
+
+    public void SetOpaDurations() {
+            setYAnimationDuration();
+            setXAnimationDuration();
+            setBGAnimationDuration();
+            setRYAnimationDuration();
+            setRetractAnimationDuration();
+            setDiamondAnimationDuration();
+            setDotsAnimationDuration();
+            setHomeResizeAnimationDuration();
+    }
+
+    public void SetOpaColors() {
+            updateOpaColorSwitch();
+            updateOpaTopColor();
+            updateOpaRightColor();
+            updateOpaLeftColor();
+            updateOpaBottomColor();
+   }
+
+    private void updateButtonLongpressDelay() {
+        int systemLpDelay = ViewConfiguration.getLongPressTimeout();
+        int userDelay = Settings.Secure.getIntForUser(getContext().getContentResolver(),
+                Settings.Secure.SMARTBAR_LONGPRESS_DELAY, 0, UserHandle.USER_CURRENT);
+        switch (userDelay) {
+            default:
+                SmartButtonView.setButtonLongpressDelay(systemLpDelay - 100);
+                break;
+            case 1:
+                SmartButtonView.setButtonLongpressDelay(systemLpDelay);
+                break;
+            case 2:
+                SmartButtonView.setButtonLongpressDelay(systemLpDelay + 200);
+                break;
+        }
     }
 }
