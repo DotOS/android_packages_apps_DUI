@@ -994,18 +994,9 @@ public class SmartBarView extends BaseNavigationBar {
 
     private void updateButtonLongpressDelay() {
         int systemLpDelay = ViewConfiguration.getLongPressTimeout();
+        int defaultdelay = systemLpDelay - 100;
         int userDelay = Settings.Secure.getIntForUser(getContext().getContentResolver(),
-                Settings.Secure.SMARTBAR_LONGPRESS_DELAY, 0, UserHandle.USER_CURRENT);
-        switch (userDelay) {
-            default:
-                SmartButtonView.setButtonLongpressDelay(systemLpDelay - 100);
-                break;
-            case 1:
-                SmartButtonView.setButtonLongpressDelay(systemLpDelay);
-                break;
-            case 2:
-                SmartButtonView.setButtonLongpressDelay(systemLpDelay + 200);
-                break;
-        }
+                Settings.Secure.SMARTBAR_LONGPRESS_DELAY, defaultdelay, UserHandle.USER_CURRENT);
+        SmartButtonView.setButtonLongpressDelay(userDelay);
     }
 }
